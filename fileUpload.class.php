@@ -5,6 +5,8 @@ class fileUpload extends TheDataBase{
     *  class by sajjad kareem 
     *  create in 2020/11/1 9:57pm 
     */
+    /* هذا الميزة تفيد في تشغيل طباعة رسالة الصح   */
+    private $SuccessMessage=false;
     /* اسم الملف للرفع */
     private $fileName;
     /* الحجم المسموح به */
@@ -132,7 +134,6 @@ private function getFilePath(){
           echo  $this->startMessageBootstrab."الرجاء اختيار ملف " .$this->endMessageBootstrab;
         }else{
           echo  $this->startMessageBootstrab."هناك أخطاء مجهولة عددها:" . $_FILES[$this->fileName]['error'].$this->endMessageBootstrab;
-
         }
         return false;
         }
@@ -148,9 +149,15 @@ private function getFilePath(){
       // بدء عملية الرفع  
       $this->filePathAfterUpload=$this->getFilePath();  
       $okUpload=move_uploaded_file($_FILES[$this->fileName]['tmp_name'],$this->filePathAfterUpload);
-      if($okUpload){
+      if($okUpload && $this->SuccessMessage==true){
         echo  $this->startMessageBootstrabSuccess.$this->messageSuccess.$this->endMessageBootstrabSuccess ;
+     
       }
+      echo  '     <script>
+      if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+      }
+      </script>';
       return true;
     }
   }
