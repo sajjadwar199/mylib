@@ -54,7 +54,7 @@ public function insert($table_name,$assoc_array,$successmsg=null){
 public function update($table,$array_update,$where,$successmsg=null){
     foreach($array_update as  $key=>$value)
   {
-    $value=$this->protection_input($_POST[$value]);
+    $value=$this->protection_input($value);
     array_push($this->update_array,$key.'='."'$value'");
   }
   $value_update= implode(",",$this->update_array);
