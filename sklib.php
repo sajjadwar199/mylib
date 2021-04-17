@@ -9,7 +9,7 @@ class TheDatabase
   private $localhost = 'localhost';
   private $username = 'root';
   private $password = '';
-  public $database = 'ajax';
+  public  $database ='form';
   protected $con;
   protected $update_array = [];
   public function getProdectionInt($getName)
@@ -278,7 +278,7 @@ class fileUpload extends TheDataBase
   /* الاخطاء الخاصة بفحص الملف */
   private $e = array();
   /* صيغ الملفات القياسية المسموح لرفعها */
-  private const standrTypefile = array('jpeg', 'jpg', 'png', 'gif', 'jfif', 'pdf', 'txt', 'zip');
+  private const standrTypefile = array('jpeg', 'jpg', 'png', 'gif', 'jfif', 'pdf', 'txt', 'zip','doc');
   // بداية الرسالة الخطأ بوتستراب
   private $startMessageBootstrab = "<h6  align='right' style='color:red'>";
   // نهاية الرسالة الخطأ بوتستراب
@@ -403,7 +403,6 @@ class fileUpload extends TheDataBase
   /*
 * وظيفة هذه الدالة عمل امتداد للملف وارجاعه
 */
-
   private function getFilePath()
   {
     if ($this->checkAllowType() != false && $this->checkAllowSize() != false) {
@@ -452,7 +451,6 @@ class fileUpload extends TheDataBase
       return true;
     }
   }
-
   /**
    * دالة لتحديث الملفات
    *
@@ -470,23 +468,19 @@ class fileUpload extends TheDataBase
     $pos = strpos($where, "where");
     /*custom name */
     $where2 = substr($where, $pos + 5);
-
     // جلب الملف القديم
     foreach ($this->show($table, $where) as $old) {
       $oldPath = $old->$oldUrl;
     }
     //رفع الملف الجديد بدل القديم
     $newPath = $this->uploadFile($newUrl, $uploadTo, $SuccessMessage);
-
     $_POST['new'] = $newPath;
-
     $this->update($table, [$oldUrl => 'new'], $where2);
     //حذف القديم بعد الرفع
     if ($newPath != false) {
       if ($oldPath != null and file_exists($oldPath)) {
         $this->deleteFiles($oldPath);
         // عمل تحديث للرابط
-
       }
       return $newPath;
     } else {
@@ -496,7 +490,6 @@ class fileUpload extends TheDataBase
       return $oldPath;
     }
   }
-
   /*
 * وظيفة هذه الدالة هي لحذف الملفات
 */
@@ -558,10 +551,8 @@ class paginate extends  fileUpload
         if (!isset($page) || $page == '' || $page < 1) {
             $page = 1;
         }
-
         if ($page > 1) {
             $mins = $page - 1;
-
             $prev_btn = " <li class='page-item'>" . "<a class='page-link' href=$this->page?page=$mins$this->url_vars   >&laquo;</a>" . "</li>";
             return $prev_btn;
         }
@@ -590,31 +581,24 @@ class paginate extends  fileUpload
         if (!isset($page) || $page == '' || $page < 1 || $page > $current_page) {
             $page = 1;
         }
-
         if ($this->links_between != '') {
             $limit = $this->links_between;
         } else {
             $limit = 5;  /* عدد الصفحات التي تضهر في وسط تعداد الصفحات */
         }
-
         $links = "";
         if ($total_pages >= 1 && $current_page <= $total_pages) {
             if ($page == 1) {
                 $links .= "
-
                 <li class = 'page-item active'>
                 <a  class = 'page-link' href = \"{$url}?page=1$this->url_vars \">1</a>
-
                 </li>";
             } else {
                 $links .= "
-
                 <li class = 'page-item'>
                 <a  class = 'page-link' href = \"{$url}?page=1$this->url_vars \">1</a>
-
                 </li>";
             }
-
             $i = max(2, $current_page - $limit);
             if ($i > 2)
                 $links .= "              <li  class='page-item'>
@@ -623,8 +607,6 @@ class paginate extends  fileUpload
             for (; $i < min($current_page + $limit + 1, $total_pages); $i++) {
                 if ($i == @$page) {
                     $links .= "
-
-
                     <li class = 'page-item active'>
                     <a  class = 'page-link' href = \"{$url}?page={$i}$this->url_vars \">{$i}</a>
                     </li>
@@ -634,42 +616,32 @@ class paginate extends  fileUpload
                     <li class = 'page-item'>
                     <a  class = 'page-link' href = \"{$url}?page={$i}$this->url_vars \">{$i}</a>
                     </li>
-
                     ";
                 }
             }
             if ($i != $total_pages)
                 $links .= "     <li  class='page-item'>    <a class='page-link'>...</a></li> ";
             if ($page == $total_pages) {
-
                 $links .= "
                     <li class = 'page-item active'>
                     <a  class = 'page-link' href = \"{$url}?page={$total_pages}$this->url_vars \">{$total_pages}</a>
-
                     </li>
-
                     ";
             } else {
                 $links .= "
                     <li class = 'page-item'>
                     <a  class = 'page-link' href = \"{$url}?page={$total_pages}$this->url_vars \">{$total_pages}</a>
-
                     </li>
-
                     ";
             }
         }
         return $links;
     }
-
-
-
     public  function  paginate_links()
     {
         if (isset($_GET['page'])) {
             $page = (int)$_GET['page'];
         }
-
         $conn = $this->connect();
         /* عدد العناصر في الجدول */
         $count_items = "SELECT COUNT(*) from $this->table $this->where ";
@@ -684,24 +656,15 @@ class paginate extends  fileUpload
         if (!isset($page) || $page == '' || $page < 1 || $page > $rowsperpage) {
             $page = 1;
         }
-
-
-
 ?>
         <nav aria-label = "Page navigation example">
-
             <ul class = "pagination">
                 <?php if ($page >= 1) {
                 ?>
                     <!--prec btn --> <?php echo  $this->prev(); ?>
-
-
                     <?php   /*  echo $this->links($rowsperpage);  */
                     echo $this->links($page, $rowsperpage, $this->page);
-
-
                     ?>
-
                     <!--next btn --><?php echo $this->next($rowsperpage);
                                 }  ?>
         </nav>
@@ -709,10 +672,8 @@ class paginate extends  fileUpload
     }
     public  function  show_with_pagination()
     {
-
         $conn  = $this->connect();
         $query = "SELECT * FROM $this->table   $this->where   LIMIT $this->number_show,$this->limit";
-
         $q = mysqli_query($conn, $query);
         if ($q == false) {
             return false;
@@ -721,13 +682,11 @@ class paginate extends  fileUpload
         while ($row = mysqli_fetch_object($q)) {
             $rows[] = $row;
         }
-
         return $rows;
     }
 };
 class validator extends paginate
 {
-
   /* find_errors prop */
   private $errors = [];
   /* find_errors prop */
@@ -749,7 +708,6 @@ class validator extends paginate
   /* flag all validation */
   public  function test_validate()
   {
-
     return $this->find_errors($this->check);
   }
   public  function validation($valid_array, $msg_array = null)
@@ -757,9 +715,7 @@ class validator extends paginate
     foreach ($valid_array as $key => $value) {
       array_push($this->input_names, $this->escape_string(strip_tags(htmlentities(trim($_POST[$key])))));
       foreach ($value as $option) {
-
         /* start validation part  */
-
         switch ($option) {
           case substr($option, 0, 3) == "max":
             $this->max(substr($option, 4), $key);
@@ -805,7 +761,6 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
@@ -832,7 +787,6 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
@@ -860,7 +814,6 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
@@ -888,12 +841,10 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
     }
-
     if (in_array($this->escape_string(strip_tags(htmlentities(trim(@$_POST[$input_name])))), $this->input_names)) {
       $input_value = $this->escape_string(strip_tags(htmlentities(trim(@$_POST[$input_name]))));
     }
@@ -916,12 +867,10 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
     }
-
     if (in_array($this->escape_string(strip_tags(htmlentities(trim(@$_POST[$input_name])))), $this->input_names)) {
       $input_value = $this->escape_string(strip_tags(htmlentities(trim(@$_POST[$input_name]))));
     }
@@ -944,7 +893,6 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
@@ -971,7 +919,6 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
@@ -999,7 +946,6 @@ class validator extends paginate
       $name = substr($value, 0, $pos);
       /* origanl name */
       $custom_name = substr($value, $pos + 1);
-
       if ($name == $input_name) {
         $custom_name_arabic = $custom_name;
       }
@@ -1027,15 +973,12 @@ class validator extends paginate
             </div>';
     }
   }
-
   public  function find_errors($errors_array)
   {
     $error =  $this->errors[] = $errors_array;
-
     $flag_false = array();
     $flag_true = array();
     $errors_array = array();
-
     for ($i = 0; $i < count($error); $i++) {
       if ($error[$i]  == "false") {
         array_push($flag_false, "false");
@@ -1048,7 +991,6 @@ class validator extends paginate
     } else if ($flag_true != null) {
       return true;
     }
-
     //   return $this->chack_bool;
   }
 };
@@ -1063,7 +1005,6 @@ class flashMessage extends validator
      //الرسالة
      private $message;
      //انواع الرسائل القياسية
-
      private const standrMessageType = array("success", "warning", "primary", "danger", "info", "light", 'dark');
      /* استدعاء الدالة الرئيسي */
      /**
@@ -1118,7 +1059,6 @@ class flashMessage extends validator
      {
           $_SESSION['success_message'] = '<div class="alert alert-success"  style="text-align:right;" role="alert">' . $this->message . '</div>';
      }
-
      private function warning()
      {
           $_SESSION['warning_message'] = '<div class="alert alert-warning"  style="text-align:right;"  role="alert">' . $this->message . '</div>';
@@ -1131,7 +1071,6 @@ class flashMessage extends validator
      {
           $_SESSION['error_message'] = '<div class="alert alert-danger"  style="text-align:right;" role="alert">' . $this->message . '</div>';
      }
-
      private function info()
      {
           $_SESSION['info_message'] = '<div class="alert alert-info"  style="text-align:right;" role="alert">' . $this->message . '</div>';
@@ -1197,8 +1136,6 @@ class backupData extends flashMessage
       $result = $statement->fetchAll();
       return $result;
    }
-
-
    /* وظيفة هذه الدالة هي عمل نسخ احتياطي للبيانات مع رفع الملف
  * @param $backToFolder اسم الملف الذي تريد نقل ملف النسخ الاحتياطي له
  * ex  $obj->makeBackUp("d:/folder");
@@ -1206,9 +1143,7 @@ class backupData extends flashMessage
    public function makeBackUp($backToFolder = null)
    {
       $connect = $this->connectPdo();
-
       if (isset($_POST['table'])) {
-
          if (!isset($_POST['table'])) {
             $this->setMessage('الرجاء اختيار جداول لعمل نسخ احتياطي لها', "danger");
          }
@@ -1225,7 +1160,6 @@ class backupData extends flashMessage
             $statement = $connect->prepare($select_query);
             $statement->execute();
             $total_row = $statement->rowCount();
-
             for ($count = 0; $count < $total_row; $count++) {
                $single_result = $statement->fetch(PDO::FETCH_ASSOC);
                $table_column_array = array_keys($single_result);
@@ -1240,26 +1174,18 @@ class backupData extends flashMessage
          fwrite($file_handle, $output);
          fclose($file_handle);
          header('Content-Description: File Transfer');
-
          header('Content-Transfer-Encoding: binary');
          header('Expires: 0');
          header('Cache-Control: must-revalidate');
          ob_clean();
          flush();
          $this->setMessage("تم عمل نسخ احتياطي بنجاح", "success");
-
          echo  ' <script>
          if ( window.history.replaceState ) {
          window.history.replaceState( null, null, window.location.href );
          }
          </script>';
       };
-
-
-
-
-
-
 ?>
       <div class="card border-success   mb-3 container">
          <div class="card-header">
@@ -1274,7 +1200,6 @@ class backupData extends flashMessage
                <form method="post" id="export_form" style="text-align:center;">
                   <hr>
                   <?php
-
                   foreach ($this->getNumberTables() as $table) {
                   ?>
                      <div class="form-check form-check-inline">
@@ -1288,19 +1213,11 @@ class backupData extends flashMessage
                      <input type="submit" name="submit" id="submit" class="btn btn-success" value="تصدير" />
                   </div>
                </form>
-
-
-
-
             </p>
          </div>
-
-
-
    <?php
    }
 };
-
 class masterpage extends backupData
 {
   /* عنوان الصفحة */
@@ -1342,14 +1259,12 @@ class masterpage extends backupData
   /* دالة تخصص الجزء الثاني للقالب  */
   public function endSection()
   {
-
     return include  $this->endSectionName . '.php';
   }
 };
-
 class ajaxx extends masterpage
 {
-    /**
+ /**
      * وظيفة هذا الكلاس للتعامل مع جميع عمليات الاجاكس
      * create by sajjad kareem  at  2020/12/8
      */
@@ -1370,7 +1285,6 @@ class ajaxx extends masterpage
      * @var array
      */
     private $dataRequest = [];
-
     /**
      * وظيفة هذا المغير هو لتحديد المكان الذي تعرض فيه البيانات
      *
@@ -1396,6 +1310,7 @@ class ajaxx extends masterpage
      * @param [string] $pageName   اسم  صفحة الاجاكس
      * @param [string] $divShowId   معرف مكان عرض البيانات
      * @param [string] $data   ex .. ["name","age"]   البيانات
+     * @param [array] $data   ex .. [["name"=>"file"]]   لارسال ملف
      * @param [string] $method   ex .. post or get
      * @param [string] $dataType   ex .. json or text
      * @return void
@@ -1436,8 +1351,6 @@ class ajaxx extends masterpage
     private function load($eventId, $event)
     {
         if ($this->spinnerId != null) {
-
-
 ?>
             <script>
                 $(document).ready(function() {
@@ -1453,7 +1366,6 @@ class ajaxx extends masterpage
                                     $('#<?php echo $this->spinnerId; ?>').append(data.data);
                                     $('#<?php echo  $this->divShowId; ?>').append().html(data);
                                     $('#<?php echo $eventId; ?>').removeAttr('disabled');
-
                                 }
                             }).done(function() {
                                 $('#<?php echo $this->spinnerId; ?>').hide();
@@ -1478,7 +1390,6 @@ class ajaxx extends masterpage
                             success: function(data) {
                                 $('#<?php echo  $this->divShowId; ?>').append().html(data);
                                 $('#<?php echo $eventId; ?>').removeAttr('disabled');
-
                             }
                         })
                     })
@@ -1488,6 +1399,12 @@ class ajaxx extends masterpage
             return true;
         }
     }
+    // معرفة المصفوفة اذا كانت    ثنائية  الخاصة برفع الملف
+    private function isAssoc(array $arr)
+    {
+        if (array() === $arr) return false;
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
     /**
      * تقوم هذه الدالة بأرسال القيم عبر  اجاكس
      *   @param $eventId ex  ..("#btn");
@@ -1496,10 +1413,7 @@ class ajaxx extends masterpage
      */
     private function send($eventId, $event)
     {
-
         if ($this->spinnerId != null) {
-
-
         ?>
             <script>
                 $(document).ready(function() {
@@ -1507,23 +1421,57 @@ class ajaxx extends masterpage
                         <?php if ($event == 'click') { ?>
                             $('#<?php echo $eventId; ?>').attr('disabled', 'disabled');
                         <?php  }; ?>
+                        var form_data = new FormData();
+                        <?php
+                        $filecount = -1;
+                        foreach ($this->dataRequest  as $data) {
+                            if (is_array($data)) {
+                                foreach ($data as $k => $v) {
+                                    if ($v == 'file') {
+                                        // فحص اذا كان post القادم هو ملف
+                                        $filecount = $filecount + 1;
+                        ?>
+                                        var <?php echo $k; ?> = $('#<?php echo $k; ?>').prop('files')[0];
+                                        <?php
+                                        ?> form_data.append('<?php echo $k; ?>', <?php echo $k; ?>);
+                                <?php
+                                    }
+                                }
+                            } elseif (!is_array($data)) {
+                                //اذا كانت البيانات ليست ملف
+                                ?>
+                                var <?php echo $data; ?> = $('#<?php echo  $data; ?>').val();
+                                <?php
+                                //مرحلة جمع بيانات الفورم
+                                ?> form_data.append('<?php echo $data; ?>', <?php echo $data; ?>);
+                        <?php
+                            }
+                        }
+                        ?>
                         $('#<?php echo $this->spinnerId; ?>').show();
                         $.ajax({
                             url: "<?php echo  $this->AjaxPageName; ?>",
                             method: "<?php echo $this->typeRequest; ?>",
                             type: '<?php echo  $this->dataType;  ?>',
-                            data: {
-                                <?php
-                                foreach ($this->dataRequest as $vars) {
-                                    echo $vars . ':' ?>$('#<?php echo $vars;  ?>').val(),
-                            <?php
-                                }
-                            ?> },
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            data: form_data,
                             success: function(data) {
                                 $('#<?php echo $this->spinnerId; ?>').append(data.data);
                                 $('#<?php echo  $this->divShowId; ?>').append().html(data);
                                 $('#<?php echo $eventId; ?>').removeAttr('disabled');
-
+                                <?php
+                                //لافراغ مربعات النموذج بعد الارسال
+                                foreach ($this->dataRequest as $vars) {
+                                ?>
+                                    <?php if (!is_array($vars)) {   ?>
+                                        <?php
+                                        echo $vars . ':' ?>$('#<?php echo $vars;  ?>').val('')
+                                <?php
+                                    }
+                                }
+                                ?>
                             }
                         }).done(function() {
                             $('#<?php echo $this->spinnerId; ?>').hide();
@@ -1540,27 +1488,51 @@ class ajaxx extends masterpage
                     $('#<?php echo $eventId; ?>').<?php echo $event; ?>(function() {
                         <?php if ($event == 'click') { ?>
                             $('#<?php echo $eventId; ?>').attr('disabled', 'disabled');
-                        <?php  }; ?> $.ajax({
+                        <?php  }; ?>
+                        var form_data = new FormData();
+                        <?php
+                        $filecount = -1;
+                        foreach ($this->dataRequest  as $data) {
+                            if (is_array($data)) {
+                                foreach ($data as $k => $v) {
+                                    if ($v == 'file') {
+                                        // فحص اذا كان post القادم هو ملف
+                                        $filecount = $filecount + 1;
+                        ?>
+                                        var <?php echo $k; ?> = $('#<?php echo $k; ?>').prop('files')[0];
+                                        <?php
+                                        ?> form_data.append('<?php echo $k; ?>', <?php echo $k; ?>);
+                                <?php
+                                    }
+                                }
+                            } elseif (!is_array($data)) {
+                                //اذا كانت البيانات ليست ملف
+                                ?>
+                                var <?php echo $data; ?> = $('#<?php echo  $data; ?>').val();
+                                <?php
+                                //مرحلة جمع بيانات الفورم
+                                ?> form_data.append('<?php echo $data; ?>', <?php echo $data; ?>);
+                        <?php
+                            }
+                        }
+                        ?>
+                        $.ajax({
                             url: "<?php echo  $this->AjaxPageName; ?>",
                             method: "<?php echo $this->typeRequest; ?>",
                             type: '<?php echo  $this->dataType;  ?>',
-                            data: {
-                                <?php
-                                foreach ($this->dataRequest as $vars) {
-                                    echo $vars . ':' ?>$('#<?php echo $vars;  ?>').val(),
-                            <?php
-                                }
-                            ?>},
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            data: form_data,
                             success: function(data) {
                                 $('#<?php echo  $this->divShowId; ?>').append().html(data);
                                 $('#<?php echo $eventId; ?>').removeAttr('disabled');
-
                             }
                         })
                     })
                 });
             </script>
-<?php
+        <?php
             return true;
         }
     }
@@ -1575,75 +1547,60 @@ class ajaxx extends masterpage
      *
      * @return void
      */
-    public function ajaxLoad($ajaxPageName,$divShowId,$loaderId=null,$method=null,$type=null){
-        if($method==null){
-            $method='get';
+    public function ajaxLoad($ajaxPageName, $divShowId, $loaderId = null, $method = null, $type = null)
+    {
+        if ($method == null) {
+            $method = 'get';
         }
-        if($type==null){
-            $type='text';
+        if ($type == null) {
+            $type = 'text';
         }
-if($loaderId!=null){
-
-
+        if ($loaderId != null) {
         ?>
-     <script>
-    $(document).ready(function() {
-      $(window).ready(function() {
-        $('#<?php echo $loaderId; ?>').show();
-        $.ajax({
-          url: "<?php echo  $ajaxPageName; ?>",
-          method:"<?php echo $method; ?>",
-          type:"<?php  echo $type; ?>",
-          success:function(data) {
-            $('#<?php echo $loaderId; ?>').append(data.data);
-           $('#<?php echo $divShowId; ?>').append().html(data);
-
-          }
-        }).done(function() {
+            <script>
+                $(document).ready(function() {
+                    $(window).ready(function() {
+                        $('#<?php echo $loaderId; ?>').show();
+                        $.ajax({
+                            url: "<?php echo  $ajaxPageName; ?>",
+                            method: "<?php echo $method; ?>",
+                            type: "<?php echo $type; ?>",
+                            success: function(data) {
+                                $('#<?php echo $loaderId; ?>').append(data.data);
+                                $('#<?php echo $divShowId; ?>').append().html(data);
+                            }
+                        }).done(function() {
                             $('#<?php echo $loaderId; ?>').hide();
                         });
-      });
-
-    });
-  </script>
-
-     <?php
-     }else if($loaderId==null){
-
-        ?>
-        <script>
-       $(document).ready(function() {
-         $(window).ready(function() {
-           $.ajax({
-             url: "<?php echo  $ajaxPageName; ?>",
-             method:"<?php echo $method; ?>",
-             type:"<?php  echo $type; ?>",
-             success:function(data) {
-              $('#<?php echo $divShowId; ?>').append().html(data);
-             }
-           });
-         });
-
-       });
-     </script>
-
+                    });
+                });
+            </script>
         <?php
-
-     }
+        } else if ($loaderId == null) {
+        ?>
+            <script>
+                $(document).ready(function() {
+                    $(window).ready(function() {
+                        $.ajax({
+                            url: "<?php echo  $ajaxPageName; ?>",
+                            method: "<?php echo $method; ?>",
+                            type: "<?php echo $type; ?>",
+                            success: function(data) {
+                                $('#<?php echo $divShowId; ?>').append().html(data);
+                            }
+                        });
+                    });
+                });
+            </script>
+<?php
+        }
     }
-
 };
-class core  extends ajaxx{
+class sklib  extends ajaxx{
     /* الكلاس الرئيسي */
      /*
      * هذه هي مكتبة بسيطة من تصميم سجاد عبد الكريم
      *
      */
-
-
-
-
     };
-
-
    ?>
